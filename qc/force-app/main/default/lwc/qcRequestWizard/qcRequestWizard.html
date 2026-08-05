@@ -1,0 +1,474 @@
+<template>
+    <div class="slds-p-around_small qc-bg">
+
+        <!-- Page header -->
+        <div class="slds-page-header slds-m-bottom_small">
+            <div class="slds-page-header__row">
+                <div class="slds-page-header__col-title">
+                    <div class="slds-media">
+                        <div class="slds-media__figure">
+                            <span class="qc-badge">QC</span>
+                        </div>
+                        <div class="slds-media__body">
+                            <div class="slds-page-header__name">
+                                <div class="slds-page-header__name-title">
+                                    <h1><span class="slds-page-header__title slds-truncate">Yêu cầu QC</span></h1>
+                                </div>
+                            </div>
+                            <p class="slds-page-header__name-meta">Quản lý &amp; in Chứng Chỉ Chất Lượng (MTC)</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Path -->
+        <div class="slds-path slds-m-bottom_medium">
+            <div class="slds-grid slds-path__track">
+                <div class="slds-grid slds-path__scroller-container">
+                    <div class="slds-path__scroller"><div class="slds-path__scroller_inner">
+                        <ul class="slds-path__nav" role="listbox">
+                            <!-- Bấm vào bước đã qua = XEM LẠI (khoá sửa). Muốn sửa phải bấm
+                                 nút "Yêu cầu hiệu chỉnh" ở chân thẻ. -->
+                            <li class={path1Class} role="presentation"><a class="slds-path__link" href="javascript:void(0);" onclick={viewStep1} title="Xem lại bước 1">
+                                <span class="slds-path__stage"><lightning-icon icon-name="utility:check" size="x-small" variant="inverse"></lightning-icon></span>
+                                <span class="slds-path__title">Bước 1 · Gửi yêu cầu (Phòng kinh doanh)</span></a></li>
+                            <li class={path2Class} role="presentation"><a class="slds-path__link" href="javascript:void(0);" onclick={viewStep2} title="Xem lại bước 2">
+                                <span class="slds-path__stage"></span>
+                                <span class="slds-path__title">Bước 2 · Kiểm tra &amp; hiệu chỉnh (Phòng QLCL)</span></a></li>
+                            <li class={path3Class} role="presentation"><a class="slds-path__link" href="javascript:void(0);">
+                                <span class="slds-path__stage"></span>
+                                <span class="slds-path__title">Bước 3 · Kiểm tra &amp; xác nhận (Phòng kinh doanh)</span></a></li>
+                        </ul>
+                    </div></div>
+                </div>
+            </div>
+        </div>
+
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Đang xử lý" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- ===== BƯỚC 1 — KHÔNG CÓ QUYỀN TẠO ===== -->
+        <template if:true={camTaoYeuCau}>
+            <article class="slds-card">
+                <div class="slds-card__body slds-card__body_inner">
+                    <div class="qc-cho">
+                        <lightning-icon icon-name="utility:lock" size="small" class="slds-m-right_x-small"></lightning-icon>
+                        <span>Chỉ Phòng Kinh doanh mới được tạo yêu cầu QC. Bạn hãy mở phiếu có sẵn
+                              từ danh sách để xử lý phần việc của mình.</span>
+                    </div>
+                </div>
+            </article>
+        </template>
+
+        <!-- ===== STEP 1 ===== -->
+        <template if:true={isStep1}>
+            <article class="slds-card">
+                <div class="slds-card__header"><header class="slds-media slds-media_center slds-has-flexi-truncate">
+                    <div class="slds-media__body"><h2 class="slds-card__header-title">Gửi yêu cầu</h2>
+                        <p class="slds-text-body_small slds-text-color_weak">Nhập thông tin yêu cầu và danh sách ID cần lấy chứng chỉ.</p></div>
+                </header></div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <!-- P.QLCL trả phiếu về đây: nói rõ phải làm gì tiếp -->
+                    <template if:true={coThongBaoWf}>
+                        <div class="qc-cho slds-m-bottom_small">
+                            <lightning-icon icon-name="utility:clock" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span>{thongBaoWf}</span>
+                        </div>
+                    </template>
+                    <template if:true={isStep1View}>
+                        <div class="slds-box slds-box_x-small slds-theme_shade slds-m-bottom_small slds-text-body_small">
+                            <lightning-icon icon-name="utility:lock" size="xx-small" class="slds-m-right_xx-small"></lightning-icon>
+                            Đang xem lại bước 1 — không sửa được. Muốn sửa thì quay về bước sau rồi bấm
+                            <strong>Yêu cầu hiệu chỉnh</strong>.
+                        </div>
+                    </template>
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input label="Số (SO)" required message-when-value-missing="Vui lòng nhập Số (SO)."
+                                disabled={khoaBuoc1}
+                                data-field="so" value={so} onchange={handleInput} placeholder="Nhập số (SO)"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input label="Tên tàu (Transporter)" disabled={khoaBuoc1}
+                                data-field="transporter" value={transporter} onchange={handleInput} placeholder="Nhập transporter"></lightning-input>
+                        </div>
+                        <div class="slds-col slds-size_1-of-3">
+                            <lightning-input label="Customer Code" required message-when-value-missing="Vui lòng nhập Customer Code."
+                                disabled={khoaBuoc1}
+                                data-field="customerCode" value={customerCode} onchange={handleInput} placeholder="Nhập customer code"></lightning-input>
+                        </div>
+                    </div>
+                    <div class="slds-grid slds-grid_align-spread slds-m-top_small slds-m-bottom_xx-small">
+                        <span class="slds-form-element__label"><abbr class="slds-required" title="bắt buộc">*</abbr>Danh sách ID (ListID)</span>
+                        <template if:true={isStep1Edit}>
+                            <div>
+                                <button class="slds-button slds-button_icon slds-button_icon-border-filled slds-m-right_xx-small"
+                                    title="Yêu cầu định dạng file CSV" onclick={toggleCsvHelp}>
+                                    <lightning-icon icon-name="utility:question" size="xx-small"></lightning-icon>
+                                </button>
+                                <label class="slds-button slds-button_neutral">
+                                    <lightning-icon icon-name="utility:upload" size="x-small" class="slds-m-right_xx-small"></lightning-icon>Import CSV
+                                    <input type="file" accept=".csv" class="qc-hidden" onchange={handleImportIds} />
+                                </label>
+                            </div>
+                        </template>
+                    </div>
+                    <template if:true={showCsvHelp}>
+                        <div class="slds-box slds-box_x-small slds-theme_info slds-m-bottom_x-small slds-text-body_small">
+                            <p class="slds-m-bottom_xx-small"><strong>Định dạng file CSV</strong></p>
+                            <ul class="slds-list_dotted">
+                                <li>Mỗi dòng một ID, đặt ở <strong>cột đầu tiên</strong>.</li>
+                                <li>Có dòng tiêu đề tên <code>id</code> cũng được — hệ thống tự bỏ qua.</li>
+                                <li>Các cột phía sau cột đầu bị bỏ qua.</li>
+                                <li>Dòng trống bị bỏ qua. Tối đa 1000 ID.</li>
+                            </ul>
+                            <pre class="qc-csv-vd">id
+80250800890
+80250800897</pre>
+                        </div>
+                    </template>
+                    <!-- Nhãn đã hiện ở dòng trên (kèm dấu * và nút Import CSV) nên ẩn nhãn của component,
+                         vẫn khai label để trình đọc màn hình đọc được. -->
+                    <lightning-textarea label="Danh sách ID (ListID)" variant="label-hidden" required
+                        message-when-value-missing="Vui lòng nhập danh sách ID." disabled={khoaBuoc1}
+                        data-field="idListText" value={idListText} onchange={handleInput}
+                        placeholder="Nhập danh sách ID, cách nhau bằng dấu phẩy hoặc xuống dòng"></lightning-textarea>
+                    <p class="slds-text-body_small slds-text-color_weak slds-m-top_xx-small">Ví dụ: 80250800890, 80250800897 — tối đa 1000 ID.</p>
+                </div>
+                <footer class="slds-card__footer"><div class="slds-grid slds-grid_align-end">
+                    <template if:true={isStep1Edit}>
+                        <button class="slds-button slds-button_neutral" onclick={handleCancel}>
+                            <lightning-icon icon-name="utility:close" size="x-small" class="slds-m-right_xx-small"></lightning-icon>Hủy</button>
+                        <button class="slds-button slds-button_brand" onclick={submitRequest}>
+                            <lightning-icon icon-name="utility:send" size="x-small" variant="inverse" class="slds-m-right_xx-small"></lightning-icon>Gửi yêu cầu</button>
+                    </template>
+                    <template if:true={isStep1View}>
+                        <button class="slds-button slds-button_brand" onclick={continueBack}>Tiếp tục
+                            <lightning-icon icon-name="utility:forward" size="x-small" variant="inverse" class="slds-m-left_xx-small"></lightning-icon></button>
+                    </template>
+                </div></footer>
+            </article>
+        </template>
+
+        <!-- ===== STEP 2 ===== -->
+        <template if:true={isStep2}>
+            <article class="slds-card">
+                <div class="slds-card__header"><header class="slds-media slds-media_center"><div class="slds-media__body">
+                    <h2 class="slds-card__header-title">Kiểm tra &amp; hiệu chỉnh số liệu</h2>
+                    <p class="slds-text-body_small slds-text-color_weak">Kiểm tra dữ liệu nhận từ BK, hiệu chỉnh nếu cần.</p></div></header></div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <!-- Nói rõ phiếu đang chờ ai, để người không có quyền không tưởng hệ thống lỗi -->
+                    <template if:true={coThongBaoWf}>
+                        <div class="qc-cho slds-m-bottom_small">
+                            <lightning-icon icon-name="utility:clock" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span>{thongBaoWf}</span>
+                        </div>
+                    </template>
+                    <div class="slds-grid slds-gutters slds-wrap">
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="slds-box slds-box_x-small">
+                                <h3 class="slds-text-title_caps slds-m-bottom_x-small">Thông tin yêu cầu</h3>
+                                <dl class="slds-list_horizontal slds-wrap">
+                                    <template for:each={infoRows} for:item="r">
+                                        <dt key={r.id} class="slds-item_label slds-text-color_weak slds-truncate" style="width:52%">{r.k}</dt>
+                                        <dd key={r.id} class="slds-item_detail slds-truncate" style="width:48%"><b>{r.v}</b></dd>
+                                    </template>
+                                </dl>
+                                <div class="slds-m-top_x-small"><span class="slds-badge slds-theme_success">Đã nhận dữ liệu</span></div>
+                            </div>
+                        </div>
+                        <div class={tableWrapClass}>
+                            <div class="slds-grid slds-grid_align-spread slds-m-bottom_x-small">
+                                <span class="slds-text-title_caps slds-align-middle">Dữ liệu nhận được ({totalRecords} bản ghi)</span>
+                                <div>
+                                    <!-- Refresh gọi lại BK và ghi đè số liệu -> là hành động sửa, ẩn khi chỉ xem -->
+                                    <template if:true={isStep2Edit}>
+                                        <button class="slds-button slds-button_neutral" onclick={handleRefresh}>
+                                            <lightning-icon icon-name="utility:refresh" size="x-small" class="slds-m-right_xx-small"></lightning-icon>Refresh</button>
+                                    </template>
+                                    <button class="slds-button slds-button_neutral" onclick={handleExport}>
+                                        <lightning-icon icon-name="utility:download" size="x-small" class="slds-m-right_xx-small"></lightning-icon>Export Excel</button>
+                                    <button class="slds-button slds-button_neutral" onclick={toggleTableFull} title="Esc để thoát">
+                                        <lightning-icon icon-name={tableFullIcon} size="x-small" class="slds-m-right_xx-small"></lightning-icon>{tableFullLabel}</button>
+                                </div>
+                            </div>
+                            <div class="qc-scroll">
+                                <table class="qc-tbl">
+                                    <thead>
+                                        <tr>
+                                            <th rowspan="5">STT</th>
+                                            <template for:each={idMeta} for:item="f">
+                                                <th key={f.key} rowspan="5">{f.label}<br/>{f.en}</th>
+                                            </template>
+                                            <th class="grp" colspan={prodCount}>THÔNG TIN SẢN PHẨM</th>
+                                            <th class="grp" colspan={mechCount}>CƠ TÍNH SẢN PHẨM</th>
+                                            <th class="grp" colspan={chemCount}>THÀNH PHẦN HÓA HỌC (%)</th>
+                                            <th rowspan="5">GHI CHÚ<br/>REMARKS</th>
+                                        </tr>
+                                        <tr>
+                                            <th class="grp" colspan={prodCount}>PRODUCT INFORMATION</th>
+                                            <th class="grp" colspan={mechCount}>MECHANICAL PROPERTIES</th>
+                                            <th class="grp" colspan={chemCount}>CHEMICAL COMPOSITION (%)</th>
+                                        </tr>
+                                        <tr>
+                                            <template for:each={prodMeta} for:item="f"><th key={f.key}>{f.label}</th></template>
+                                            <template for:each={mechMeta} for:item="m"><th key={m.key}>{m.label}</th></template>
+                                            <template for:each={chemCols} for:item="c"><th key={c} rowspan="2">{c}</th></template>
+                                        </tr>
+                                        <tr>
+                                            <template for:each={prodMeta} for:item="f"><th key={f.key}>{f.en}</th></template>
+                                            <template for:each={mechMeta} for:item="m"><th key={m.key}>{m.en}</th></template>
+                                        </tr>
+                                        <tr>
+                                            <template for:each={prodMeta} for:item="f"><th key={f.key} class="unit">{f.unit}</th></template>
+                                            <template for:each={mechMeta} for:item="m"><th key={m.key} class="unit">{m.unit}</th></template>
+                                            <template for:each={chemUnitGroups} for:item="g"><th key={g.id} class="unit" colspan={g.span}>{g.label}</th></template>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={records} for:item="row">
+                                            <tr key={row.idx}>
+                                                <td>{row.stt}</td>
+                                                <template for:each={row.cells} for:item="c">
+                                                    <td key={c.key}><input class="qc-cell" type="text" value={c.value} readonly={khoaBang}
+                                                        data-index={row.idx} data-key={c.key} onchange={handleCellChange} /></td>
+                                                </template>
+                                                <td><input class="qc-cell" type="text" placeholder="Nhập" value={row.remarks} readonly={khoaBang}
+                                                    data-index={row.idx} onchange={handleRemarksChange} /></td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Không thao tác được thì KHÔNG hiện nút nào: chân thẻ trống dễ hiểu hơn
+                     một nút "Xem bước 3" mà bấm vào cũng chẳng làm được gì. -->
+                <template if:true={suaDuocBuoc2}>
+                    <footer class="slds-card__footer"><div class="slds-grid slds-grid_align-spread">
+                        <!-- Số liệu BK sai -> trả phiếu về bước 1 cho P.KD lấy lại -->
+                        <button class="slds-button slds-button_destructive" onclick={handleTraVe}
+                            title="Trả phiếu về bước 1 để phòng kinh doanh lấy lại dữ liệu từ BK">
+                            <lightning-icon icon-name="utility:undo" size="x-small" variant="inverse" class="slds-m-right_xx-small"></lightning-icon>Yêu cầu hiệu chỉnh</button>
+                        <button class="slds-button slds-button_brand" onclick={handleSubmitStep2}>
+                            <lightning-icon icon-name="utility:check" size="x-small" variant="inverse" class="slds-m-right_xx-small"></lightning-icon>Xác nhận &amp; chuyển bước 3</button>
+                    </div></footer>
+                </template>
+            </article>
+        </template>
+
+        <!-- ===== STEP 3 ===== -->
+        <template if:true={isStep3}>
+            <article class="slds-card">
+                <div class="slds-card__header"><header class="slds-media slds-media_center"><div class="slds-media__body">
+                    <h2 class="slds-card__header-title">Kiểm tra &amp; xác nhận</h2>
+                    <p class="slds-text-body_small slds-text-color_weak">Kiểm tra thông tin tổng hợp, trích PDF hoặc chuyển đến tài khoản khách hàng.</p></div></header></div>
+                <div class="slds-card__body slds-card__body_inner">
+                    <!-- Phiếu đang chờ người khác xử lý -> nói rõ, tránh hiểu là hệ thống lỗi -->
+                    <template if:true={coThongBaoWf}>
+                        <div class="qc-cho slds-m-bottom_small">
+                            <lightning-icon icon-name="utility:clock" size="small" class="slds-m-right_x-small"></lightning-icon>
+                            <span>{thongBaoWf}</span>
+                        </div>
+                    </template>
+                    <div class="slds-grid slds-grid_align-spread slds-m-bottom_small slds-wrap">
+                        <span class="slds-text-title_caps slds-align-middle">Xem trước chứng chỉ (giống mẫu in)</span>
+                        <div>
+                            <span class="slds-badge slds-m-right_small">{wf.status}</span>
+
+                            <!-- Chốt chặn: phải bấm Xác nhận thì mới hiện nút phát hành -->
+                            <template if:true={xacNhanDuoc}>
+                                <button class="slds-button slds-button_brand" onclick={handleConfirmStep3}
+                                    title="Chốt nội dung phiếu, sau đó mới trích PDF và gửi khách">
+                                    <lightning-icon icon-name="utility:approval" size="x-small" variant="inverse" class="slds-m-right_xx-small"></lightning-icon>Xác nhận</button>
+                            </template>
+
+                            <template if:true={phatHanhDuoc}>
+                                <button class="slds-button slds-button_neutral" onclick={handleTransfer}
+                                    disabled={sendDisabled} title={sendTitle}>
+                                    <lightning-icon icon-name="utility:email" size="x-small" class="slds-m-right_xx-small"></lightning-icon>Gửi cho khách hàng</button>
+                                <button class="slds-button slds-button_brand" onclick={handleExtractPdf}>
+                                    <lightning-icon icon-name="utility:print" size="x-small" variant="inverse" class="slds-m-right_xx-small"></lightning-icon>Trích PDF</button>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="qc-scroll">
+                        <div class="qc-cert-full">
+                            <table class="qc-ch"><tr>
+                                <td class="qc-ch-l"><img class="qc-logo qc-logo-l" src={logoLeft} alt="logo"/></td>
+                                <td class="qc-ch-c">
+                                    <div class="qc-ch-t1">PHIẾU CHỨNG NHẬN CHẤT LƯỢNG</div>
+                                    <div class="qc-ch-t2">MILL TEST CERTIFICATE</div>
+                                </td>
+                                <td class="qc-ch-r">
+                                <template for:each={certLogos} for:item="lg">
+                                    <img key={lg.id} class={lg.cls} src={lg.src} alt={lg.alt}/>
+                                </template>
+                            </td>
+                            </tr></table>
+
+                            <table class="qc-info"><tr>
+                                <td class="qc-info-col">
+                                    <table class="qc-it">
+                                        <template for:each={certInfoLeft} for:item="r">
+                                            <tr key={r.id}><td class="qc-il">{r.k}</td><td class="qc-ic">:</td><td class="qc-iv">{r.v}</td></tr>
+                                        </template>
+                                    </table>
+                                </td>
+                                <td class="qc-info-col">
+                                    <table class="qc-it">
+                                        <template for:each={certInfoRight} for:item="r">
+                                            <tr key={r.id}><td class="qc-irl">{r.k}</td><td class="qc-ic">:</td><td class="qc-iv">{r.v}</td></tr>
+                                        </template>
+                                    </table>
+                                </td>
+                            </tr></table>
+
+                            <table class="qc-dt">
+                                <thead>
+                                    <tr>
+                                        <th rowspan="3">STT</th>
+                                        <th rowspan="3">SỐ CUỘN<br/>COIL No.</th>
+                                        <th colspan="4">THÔNG TIN SẢN PHẨM<br/>PRODUCT INFORMATION</th>
+                                        <th rowspan="3">MẺ SỐ<br/>HEAT No.</th>
+                                        <th colspan="5">CƠ TÍNH SẢN PHẨM<br/>MECHANICAL PROPERTIES</th>
+                                        <th colspan={chemCount}>THÀNH PHẦN HÓA HỌC (%)<br/>CHEMICAL COMPOSITION (%)</th>
+                                        <th rowspan="3" class="qc-rm">GHI CHÚ<br/>REMARKS</th>
+                                    </tr>
+                                    <tr>
+                                        <th>Độ dày<br/>Thickness</th><th>Độ rộng<br/>Width</th><th>Chiều dài<br/>Length</th><th>Khối lượng<br/>Weight</th>
+                                        <th>Giới hạn chảy<br/>Yield strength</th><th>Giới hạn bền<br/>Tensile strength</th><th>Độ giãn dài<br/>Elongation</th><th>Độ cứng<br/>Hardness</th><th>Thứ uốn<br/>Bending Test</th>
+                                        <template for:each={chemCols} for:item="c"><th key={c}>{c}</th></template>
+                                    </tr>
+                                    <tr>
+                                        <th>mm</th><th>mm</th><th>mm</th><th>kg</th>
+                                        <th>MPa</th><th>MPa</th><th>%</th><th>HRB</th><th></th>
+                                        <template for:each={chemUnitGroups} for:item="g"><th key={g.id} colspan={g.span}>{g.label}</th></template>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={certFullRows} for:item="r">
+                                        <tr key={r.id}>
+                                            <td>{r.stt}</td><td>{r.coil}</td>
+                                            <td>{r.thickness}</td><td>{r.width}</td><td>{r.length}</td><td>{r.weight}</td>
+                                            <td>{r.heat}</td>
+                                            <td>{r.ys}</td><td>{r.ts}</td><td>{r.el}</td><td>{r.hrb}</td><td>{r.bend}</td>
+                                            <template for:each={r.chem} for:item="c"><td key={c.key}>{c.value}</td></template>
+                                            <td class="qc-rm"><div class="qc-rm-box">{r.remarks}</div></td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+
+                            <!-- chân trang (không có dấu mộc & chữ ký) -->
+                            <table class="qc-ft">
+                                <tr>
+                                    <td class="qc-ft-l">* Chỉ tiêu ngoại quan/ The physical properties:</td>
+                                    <td class="qc-ft-v">Đạt/Passed</td>
+                                    <td class="qc-ft-r">AS THE MANUFACTURER/ NHÀ SẢN XUẤT</td>
+                                </tr>
+                                <tr>
+                                    <td class="qc-ft-l">* Kết luận/ Result:</td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="qc-ft-ind" colspan="2">{certResultVi}</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="qc-ft-ind" colspan="2">{certResultEn}</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+
+                            <table class="qc-ftb">
+                                <tr>
+                                    <td class="qc-ftb-doc">{docCode}</td>
+                                    <td class="qc-ftb-pg">{pageLabel}</td>
+                                    <td></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <!-- Bước 3 KHÔNG có nút "Yêu cầu hiệu chỉnh" (ẩn theo yêu cầu 05/08/2026).
+                     Muốn bật lại thì bọc nút dưới đây trong thẻ template if:true={traVeDuoc}
+                     và đặt vào footer — Apex traVeBuocTruoc() vẫn hỗ trợ chiều 3 -> 2:
+                       <button class="slds-button slds-button_neutral" onclick={handleTraVe}>
+                           Yêu cầu hiệu chỉnh</button>
+                     Trả phiếu về P.QLCL giờ chỉ làm được từ Bước 2 bằng nút cùng tên. -->
+            </article>
+        </template>
+
+        <!-- ===== HỘP XÁC NHẬN GỬI CHO KHÁCH HÀNG =====
+             Bắt buộc cho người dùng nhìn thấy và sửa được email trước khi bấm gửi:
+             gửi nhầm phiếu chất lượng ra ngoài là sự cố không thu hồi được. -->
+        <template if:true={showSendBox}>
+            <section role="dialog" tabindex="-1" aria-modal="true" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close" onclick={closeSendBox} title="Đóng">
+                            <lightning-icon icon-name="utility:close" size="small" variant="inverse"></lightning-icon>
+                        </button>
+                        <h2 class="slds-modal__title">Gửi phiếu cho khách hàng</h2>
+                    </header>
+
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <!-- Không gửi được: nêu rõ lý do -->
+                        <template if:false={sendInfo.canSend}>
+                            <div class="slds-box slds-box_x-small slds-theme_error slds-text-body_regular">
+                                <lightning-icon icon-name="utility:error" size="x-small" variant="inverse"
+                                    class="slds-m-right_xx-small"></lightning-icon>{sendInfo.message}
+                            </div>
+                        </template>
+
+                        <template if:true={sendInfo.canSend}>
+                            <!-- Cảnh báo nhưng vẫn gửi được, ví dụ nhiều khách trùng mã -->
+                            <template if:true={sendInfo.warning}>
+                                <div class="slds-box slds-box_x-small slds-theme_warning slds-m-bottom_small slds-text-body_small">
+                                    <lightning-icon icon-name="utility:warning" size="xx-small"
+                                        class="slds-m-right_xx-small"></lightning-icon>{sendInfo.warning}
+                                </div>
+                            </template>
+
+                            <dl class="slds-dl_horizontal slds-m-bottom_small">
+                                <dt class="slds-dl_horizontal__label slds-text-color_weak">Số phiếu</dt>
+                                <dd class="slds-dl_horizontal__detail">{sendInfo.certNo}</dd>
+                                <dt class="slds-dl_horizontal__label slds-text-color_weak">Khách hàng</dt>
+                                <dd class="slds-dl_horizontal__detail">{sendInfo.accountName}</dd>
+                                <dt class="slds-dl_horizontal__label slds-text-color_weak">File đính kèm</dt>
+                                <dd class="slds-dl_horizontal__detail">{sendInfo.fileName} ({sendInfo.fileSizeKb} KB)</dd>
+                            </dl>
+
+                            <lightning-input type="email" label="Email người nhận" required
+                                value={sendEmail} onchange={handleSendEmailChange}
+                                message-when-value-missing="Vui lòng nhập email người nhận."
+                                message-when-type-mismatch="Email không đúng định dạng."></lightning-input>
+
+                            <p class="slds-text-body_small slds-text-color_weak slds-m-top_x-small">
+                                Kiểm kỹ địa chỉ trước khi gửi — mail đã gửi không thu hồi được.
+                                Khách hàng nhận phiếu dưới dạng file PDF đính kèm.
+                            </p>
+                        </template>
+                    </div>
+
+                    <footer class="slds-modal__footer">
+                        <button class="slds-button slds-button_neutral" onclick={closeSendBox}>Đóng</button>
+                        <template if:true={sendInfo.canSend}>
+                            <button class="slds-button slds-button_brand" onclick={confirmSend} disabled={sendBtnDisabled}>
+                                <lightning-icon icon-name="utility:send" size="x-small" variant="inverse"
+                                    class="slds-m-right_xx-small"></lightning-icon>Gửi</button>
+                        </template>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+    </div>
+</template>

@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HPDQ_Status__c</fullName>
+    <description>Trạng thái phiếu:</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Trạng thái phiếu:</inlineHelpText>
+    <label>Trạng thái phiếu:</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Nhận dữ liệu từ BK</fullName>
+                <default>false</default>
+                <label>Nhận dữ liệu từ BK</label>
+            </value>
+            <!-- P.QLCL thấy số liệu BK sai -> trả phiếu về Bước 1 cho P.KD lấy lại dữ liệu.
+                 Đây là trạng thái DUY NHẤT ứng với Bước 1, nhờ vậy suy được bước từ trạng thái. -->
+            <value>
+                <fullName>P.QLCL yêu cầu hiệu chỉnh</fullName>
+                <default>false</default>
+                <label>P.QLCL yêu cầu hiệu chỉnh</label>
+            </value>
+            <value>
+                <fullName>P.QLCL xác nhận</fullName>
+                <default>false</default>
+                <label>P.QLCL xác nhận</label>
+            </value>
+            <value>
+                <fullName>P.KD xử lý</fullName>
+                <default>false</default>
+                <label>P.KD xử lý</label>
+            </value>
+            <value>
+                <fullName>P.KD xác nhận</fullName>
+                <default>false</default>
+                <label>P.KD xác nhận</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,762 @@
+{
+    "fileVersion": 0,
+    "serverMaxRevisionCounter": 2220,
+    "sourceMembers": {
+        "CustomObject__HPDQ_Cert_Mng__c": {
+            "memberType": "CustomObject",
+            "serverRevisionCounter": 1,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Settings__Security": {
+            "memberType": "Settings",
+            "serverRevisionCounter": 2,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Partner Portal Profile": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 1270,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Production Planning": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2037,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Manager": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2036,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Partner / Trader / EndUser": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 1273,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Management": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2041,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Executive Sponsor": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2027,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Sales Operation": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2038,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__IT": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2040,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__End User": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2026,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Admin": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2047,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Layout__HPDQ_Certificate__c-Quản lý in chứng chỉ chất lượng Layout": {
+            "memberType": "Layout",
+            "serverRevisionCounter": 805,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Sales": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2043,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Export Sales Leader": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2034,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Service Agent": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2045,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Service Supervisor": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2046,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Services Manager": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2039,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Read Only": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2042,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Customer Portal Profile": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 1287,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Customer Services": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2029,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Admin Community User": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 1289,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Business Analytics": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2028,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Domestic Sales": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2030,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__Salesforce API Only System Integrations": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2044,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Export Sales": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2033,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - IT": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2207,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Domestic Sales Leader": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2031,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Profile__HPDQ - Executive Sponsor": {
+            "memberType": "Profile",
+            "serverRevisionCounter": 2032,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomObject__HPDQ_Certificate__c": {
+            "memberType": "CustomObject",
+            "serverRevisionCounter": 1241,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Certificate_No__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 32,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomIndex__HPDQ_Certificate__c.HPDQ_Certificate_No__c": {
+            "memberType": "CustomIndex",
+            "serverRevisionCounter": 34,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Issue_Date__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 35,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Account__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 65,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_SAP_Customer_Code__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 66,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Contract__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 90,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Product__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 114,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Grade__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 138,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Standard__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 162,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Project__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 186,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Total_Coils__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 210,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Total_Weight__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 234,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Status__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 258,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ExternalCredential__HPDQ_PL_COS_Authen": {
+            "memberType": "ExternalCredential",
+            "serverRevisionCounter": 283,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomTab__HPDQ_Certificate__c": {
+            "memberType": "CustomTab",
+            "serverRevisionCounter": 382,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ListView__HPDQ_Certificate__c.All": {
+            "memberType": "ListView",
+            "serverRevisionCounter": 407,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Logo__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 286,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_LISTIDHRC__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 409,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Configuration__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1085,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Link__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 310,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Note__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 334,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate__c.HPDQ_Data__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 358,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ListView__User.HPDQUsers": {
+            "memberType": "ListView",
+            "serverRevisionCounter": 436,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ListView__User.AllUsers": {
+            "memberType": "ListView",
+            "serverRevisionCounter": 440,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ApexClass__QCRequestController": {
+            "memberType": "ApexClass",
+            "serverRevisionCounter": 2170,
+            "lastRetrievedFromServer": 2170,
+            "isNameObsolete": false
+        },
+        "RemoteSiteSetting__HPDQ_BK_HRC_API": {
+            "memberType": "RemoteSiteSetting",
+            "serverRevisionCounter": 441,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "FlexiPage__MTC_Record_Page": {
+            "memberType": "FlexiPage",
+            "serverRevisionCounter": 510,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": true
+        },
+        "ApexClass__QCRequestControllerTest": {
+            "memberType": "ApexClass",
+            "serverRevisionCounter": 2171,
+            "lastRetrievedFromServer": 2171,
+            "isNameObsolete": false
+        },
+        "LightningComponentBundle__qcRequestWizard": {
+            "memberType": "LightningComponentBundle",
+            "serverRevisionCounter": 2208,
+            "lastRetrievedFromServer": 2208,
+            "isNameObsolete": false
+        },
+        "LightningComponentResource__qcRequestWizard/qcRequestWizard.css": {
+            "memberType": "LightningComponentResource",
+            "serverRevisionCounter": 2209,
+            "lastRetrievedFromServer": 2209,
+            "isNameObsolete": false
+        },
+        "LightningComponentResource__qcRequestWizard/qcRequestWizard.js-meta.xml": {
+            "memberType": "LightningComponentResource",
+            "serverRevisionCounter": 2210,
+            "lastRetrievedFromServer": 2210,
+            "isNameObsolete": false
+        },
+        "LightningComponentResource__qcRequestWizard/qcRequestWizard.js": {
+            "memberType": "LightningComponentResource",
+            "serverRevisionCounter": 2211,
+            "lastRetrievedFromServer": 2211,
+            "isNameObsolete": false
+        },
+        "LightningComponentResource__qcRequestWizard/qcRequestWizard.html": {
+            "memberType": "LightningComponentResource",
+            "serverRevisionCounter": 2212,
+            "lastRetrievedFromServer": 2212,
+            "isNameObsolete": false
+        },
+        "FlexiPage__Y_u_C_u_QC": {
+            "memberType": "FlexiPage",
+            "serverRevisionCounter": 472,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "PermissionSetGroup__force__PartnerEmailAndFlowAccessPsg": {
+            "memberType": "PermissionSetGroup",
+            "serverRevisionCounter": 476,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "FlexiPage__CommandCenterApp_UtilityBar": {
+            "memberType": "FlexiPage",
+            "serverRevisionCounter": 477,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "AppMenu__AppSwitcher": {
+            "memberType": "AppMenu",
+            "serverRevisionCounter": 478,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "LightningComponentResource__qcRequestWizard/logos.js": {
+            "memberType": "LightningComponentResource",
+            "serverRevisionCounter": 2213,
+            "lastRetrievedFromServer": 2213,
+            "isNameObsolete": false
+        },
+        "LightningComponentResource__qcRequestWizard/gradeStandards.js": {
+            "memberType": "LightningComponentResource",
+            "serverRevisionCounter": 2214,
+            "lastRetrievedFromServer": 2214,
+            "isNameObsolete": false
+        },
+        "NamedCredential__HPDQ_BK_HRC": {
+            "memberType": "NamedCredential",
+            "serverRevisionCounter": 493,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": true
+        },
+        "PermissionSet__QC_BK_API_Access": {
+            "memberType": "PermissionSet",
+            "serverRevisionCounter": 497,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomApplication__standard__Approvals": {
+            "memberType": "CustomApplication",
+            "serverRevisionCounter": 551,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "FlexiPage__Y_u_c_u_QC1": {
+            "memberType": "FlexiPage",
+            "serverRevisionCounter": 547,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomTab__Y_u_c_u_QC": {
+            "memberType": "CustomTab",
+            "serverRevisionCounter": 549,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ApexClass__HPDQ_CertificatePdfController": {
+            "memberType": "ApexClass",
+            "serverRevisionCounter": 2184,
+            "lastRetrievedFromServer": 2184,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_MTC_LogoLeft": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 2105,
+            "lastRetrievedFromServer": 2105,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_MTC_LogoRight": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 2155,
+            "lastRetrievedFromServer": 2155,
+            "isNameObsolete": false
+        },
+        "ApexPage__HPDQ_MTC_Certificate": {
+            "memberType": "ApexPage",
+            "serverRevisionCounter": 2220,
+            "lastRetrievedFromServer": 2220,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_Font_ArialBold": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 722,
+            "lastRetrievedFromServer": 651,
+            "isNameObsolete": true
+        },
+        "StaticResource__HPDQ_Font_Times": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 652,
+            "lastRetrievedFromServer": 652,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_Font_TimesBold": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 653,
+            "lastRetrievedFromServer": 653,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_Fonts": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 721,
+            "lastRetrievedFromServer": 668,
+            "isNameObsolete": true
+        },
+        "WebLink__HPDQ_Certificate__c.T_o_y_u_c_u_QC": {
+            "memberType": "WebLink",
+            "serverRevisionCounter": 788,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "FlexiPage__Qu_n_l_in_ch_ng_ch_ch_t_l_ng_Record_Page": {
+            "memberType": "FlexiPage",
+            "serverRevisionCounter": 1198,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "ApexPage__HPDQ_TestPaginateA": {
+            "memberType": "ApexPage",
+            "serverRevisionCounter": 2112,
+            "lastRetrievedFromServer": 2082,
+            "isNameObsolete": true
+        },
+        "ApexPage__HPDQ_TestPaginateB": {
+            "memberType": "ApexPage",
+            "serverRevisionCounter": 2111,
+            "lastRetrievedFromServer": 2083,
+            "isNameObsolete": true
+        },
+        "ApexPage__HPDQ_TestPaginateC": {
+            "memberType": "ApexPage",
+            "serverRevisionCounter": 2113,
+            "lastRetrievedFromServer": 2084,
+            "isNameObsolete": true
+        },
+        "FlexiPage__Qu_n_l_in_ch_ng_ch_ch_t_l_ng_Record_Page1": {
+            "memberType": "FlexiPage",
+            "serverRevisionCounter": 1239,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Tensile_Strength_MPa__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1903,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Remarks__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 2024,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Bending_Test__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1562,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_CA__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1976,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "Layout__HPDQ_Certificate_Items__c-Certificate Item Layout": {
+            "memberType": "Layout",
+            "serverRevisionCounter": 2048,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomObject__HPDQ_Certificate_Items__c": {
+            "memberType": "CustomObject",
+            "serverRevisionCounter": 1297,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Ordering__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1298,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Coil_No__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1322,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Thickness__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1346,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Width__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1370,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Length__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1394,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Weight__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1418,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Heat_No__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1442,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.Yield_Strength_MPa__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1852,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": true
+        },
+        "CustomField__HPDQ_Certificate_Items__c.Tensile_Strength_MPa__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1878,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": true
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Elongation_Pct__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1514,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.Hardness_HRB__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1826,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": true
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_C__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1586,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Mn__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1634,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Si__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1610,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_S__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1658,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_P__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1682,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Cu__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1706,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Ni__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1730,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Cr__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1754,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Mo__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1778,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_V__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1802,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Hardness_HRB__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1851,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Yield_Strength_MPa__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1877,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Ti__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1904,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_Al__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1928,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_B__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 1952,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "CustomField__HPDQ_Certificate_Items__c.HPDQ_CEV__c": {
+            "memberType": "CustomField",
+            "serverRevisionCounter": 2000,
+            "lastRetrievedFromServer": null,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_MTC_Watermark": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 2106,
+            "lastRetrievedFromServer": 2106,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_MTC_LogoBoA": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 2153,
+            "lastRetrievedFromServer": 2153,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_MTC_LogoQuacert": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 2154,
+            "lastRetrievedFromServer": 2154,
+            "isNameObsolete": false
+        },
+        "StaticResource__HPDQ_MTC_LogoVietnamValue": {
+            "memberType": "StaticResource",
+            "serverRevisionCounter": 2156,
+            "lastRetrievedFromServer": 2156,
+            "isNameObsolete": false
+        },
+        "ApexClass__HPDQ_GradeStandards": {
+            "memberType": "ApexClass",
+            "serverRevisionCounter": 2169,
+            "lastRetrievedFromServer": 2169,
+            "isNameObsolete": false
+        }
+    }
+}

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>HPDQ_Certificate_Link__c</fullName>
+    <description>Link trang in của phiếu chứng nhận chất lượng GẦN NHẤT đã gửi cho khách hàng này. Mỗi lần gửi phiếu mới sẽ GHI ĐÈ giá trị cũ. Muốn xem đầy đủ mọi phiếu của khách thì dùng related list "Quản lý in chứng chỉ chất lượng". Link chỉ mở được khi đã đăng nhập Salesforce.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Link phiếu chứng nhận gần nhất đã gửi. Chỉ mở được khi đã đăng nhập Salesforce.</inlineHelpText>
+    <label>Link chứng chỉ chất lượng</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Url</type>
+</CustomField>

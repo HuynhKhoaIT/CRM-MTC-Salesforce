@@ -1,0 +1,168 @@
+.qc-bg { background: #f3f2f2; }
+
+.qc-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 2rem; height: 2rem; background: #0b5cab; color: #fff;
+    font-weight: 700; border-radius: .25rem;
+}
+.qc-hidden { display: none; }
+
+/* Path: bước chưa tới có nền xám xanh mờ.
+   Mặc định SLDS tô #f3f3f3, trùng gần như hoàn toàn với nền trang (#f3f2f2) nên trông như trong suốt. */
+.slds-path__nav .slds-is-incomplete,
+.slds-path__nav .slds-is-incomplete:after,
+.slds-path__nav .slds-is-incomplete:before { background: #dfe4ed; }
+.slds-path__nav .slds-is-incomplete:hover,
+.slds-path__nav .slds-is-incomplete:hover:after,
+.slds-path__nav .slds-is-incomplete:hover:before { background: #ccd5e3; }
+
+/* Path: bỏ vòng focus hình chữ nhật khi bấm chuột (SLDS vẽ box-shadow inset lên thẻ <a>
+   hình chữ nhật, không theo hình mũi tên của <li>). Vẫn giữ vòng focus khi dùng bàn phím. */
+.slds-path__link:focus:not(:focus-visible) { box-shadow: none; }
+
+/* Path: bước đã hoàn thành vẫn hiện tên bước.
+   Mặc định SLDS lật ngược (rotateX 180) phần tên và lật dấu tick ra thay chỗ -> đảo lại. */
+.slds-path__nav .slds-is-complete .slds-path__title,
+.slds-path__nav .slds-is-complete:hover .slds-path__title {
+    -webkit-transform: rotateX(0); transform: rotateX(0);
+}
+.slds-path__nav .slds-is-complete .slds-path__stage,
+.slds-path__nav .slds-is-complete:hover .slds-path__stage {
+    -webkit-transform: translate(-50%, -50%) rotateX(-180deg);
+    transform: translate(-50%, -50%) rotateX(-180deg);
+}
+
+/* bảng dữ liệu bước 2 */
+.qc-scroll { overflow-x: auto; border: 1px solid #dddbda; border-radius: .25rem; }
+.qc-tbl { border-collapse: collapse; width: 100%; font-size: 12px; white-space: nowrap; }
+.qc-tbl th, .qc-tbl td { border: 1px solid #e5e5e5; padding: 5px 6px; text-align: center; }
+.qc-tbl thead th { background: #f3f2f2; color: #444; font-weight: 700; line-height: 1.2; vertical-align: middle; }
+.qc-tbl th.grp { background: #eef4fb; }
+/* hàng đơn vị: chữ nhỏ, thường, xám để tách khỏi tên cột */
+.qc-tbl th.unit { font-weight: 400; font-style: italic; color: #706e6b; font-size: 11px; }
+.qc-cell {
+    width: 62px; min-width: 52px; border: 1px solid #d7dee8; border-radius: 4px;
+    padding: 3px 5px; font-size: 12px; text-align: center; box-sizing: border-box;
+}
+.qc-cell:focus { outline: none; border-color: #1b96ff; box-shadow: 0 0 0 2px rgba(27,150,255,.25); }
+
+/* mở rộng bảng bước 2 ra full màn hình (Esc để thoát) */
+.qc-full {
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0; z-index: 9001;
+    width: auto; max-width: none; padding: 12px 16px;
+    background: #fff; box-sizing: border-box;
+    display: flex; flex-direction: column;
+}
+.qc-full .qc-scroll { flex: 1 1 auto; overflow: auto; }
+
+/* chứng chỉ xem trước bước 3 */
+.qc-cert { border: 1px solid #e5e5e5; border-radius: .25rem; background: #fff; padding: 18px; }
+.qc-cert-h { font-family: "Times New Roman", serif; text-align: center; margin: 0; font-size: 18px; }
+.qc-cert-sub { text-align: center; font-size: 12px; margin-bottom: 10px; }
+.qc-cert-meta { font-size: 12px; line-height: 1.7; margin-bottom: 8px; }
+.qc-cert-t { border-collapse: collapse; width: 100%; font-size: 10px; white-space: nowrap; }
+.qc-cert-t th, .qc-cert-t td { border: 1px solid #000; padding: 2px 4px; text-align: center; }
+.qc-cert-foot { display: flex; justify-content: space-between; font-size: 11px; margin-top: 14px; }
+
+/* action tiles */
+.qc-tile { cursor: pointer; }
+.qc-tile_green { border-color: #2e844a; }
+.qc-green { color: #2e844a; }
+
+/* ===== Chứng chỉ giống mẫu in ===== */
+.qc-cert-full {
+    font-family: "Times New Roman", serif; color: #000; background: #fff;
+    padding: 16px 18px; min-width: 1050px;
+}
+.qc-ch { width: 100%; border-collapse: collapse; }
+.qc-ch td { vertical-align: middle; }
+.qc-ch-l { width: 26%; }
+.qc-ch-r { width: 26%; text-align: right; }
+.qc-ch-c { text-align: center; }
+/* tiêu đề dùng font sans-serif đậm giống template, phần còn lại là Times New Roman */
+.qc-ch-t1, .qc-ch-t2 { font-family: Arial, Helvetica, sans-serif; }
+.qc-ch-t1 { color: #0098d2; font-size: 26px; font-weight: bold; letter-spacing: .5px; }
+.qc-ch-t2 { color: #1a1a1a; font-size: 17px; font-weight: bold; letter-spacing: .5px; }
+/* Dải báo phiếu đang chờ phòng khác xử lý.
+   Làm nổi hẳn lên: người dùng mở phiếu ra mà không thao tác được thì phải thấy NGAY
+   lý do, nếu không sẽ tưởng hệ thống lỗi. Nền vàng + vạch trái đậm + chữ to. */
+.qc-cho {
+    display: flex; align-items: center;
+    padding: 12px 16px;
+    background: #fef5e7;
+    border-left: 5px solid #dd7a01;
+    border-radius: 4px;
+    color: #8c4b02;
+    font-size: 15px;
+    font-weight: 600;
+}
+.qc-cho lightning-icon { --sds-c-icon-color-foreground-default: #dd7a01; }
+
+/* Khối ví dụ file CSV trong hướng dẫn định dạng (nút "?" cạnh Import CSV) */
+.qc-csv-vd {
+    margin: .5rem 0 0; padding: .5rem .75rem;
+    background: #fff; border: 1px solid #d8dde6; border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace; font-size: 12px; line-height: 1.5;
+}
+/* Ô bảng ở chế độ xem lại: nền xám để thấy rõ là không sửa được */
+.qc-cell[readonly] { background: #f3f2f2; color: #3e3e3c; cursor: default; }
+
+.qc-logo { max-width: 100%; object-fit: contain; }
+/* Logo TRÁI ghim theo chiều RỘNG (giống .logo-l ở trang in): đổi sang logo có tỉ lệ dài
+   hơn thì nó nở ngang, lấn cột tiêu đề và làm tiêu đề rớt dòng. Ghim rộng thì chiều cao
+   tự co, bố cục không đổi. Logo PHẢI vẫn ghim chiều cao vì không đổi ảnh. */
+.qc-logo-l { width: 246px; height: auto; }
+/* 3 logo chứng nhận, tách rời từ ảnh gộp cũ. Chiều cao đặt xấp xỉ phần có hình
+   trong ảnh gộp (~60% của 62px) để header không đổi chiều cao. */
+.qc-logo-c  { vertical-align: middle; margin-left: 4px; }
+.qc-logo-c1 { height: 31px; }   /* BoA / VILAS */
+.qc-logo-c2 { height: 31px; }   /* QUACERT ISO 9001 */
+.qc-logo-c3 { height: 27px; }   /* Vietnam Value */
+
+/* phần thông tin, bảng dữ liệu và chân trang thụt vào so với header (logo/tiêu đề) */
+.qc-cert-full .qc-info,
+.qc-cert-full .qc-dt,
+.qc-cert-full .qc-ft,
+.qc-cert-full .qc-ftb {
+    width: calc(100% - 44px); margin-left: 22px; margin-right: 22px;
+}
+
+.qc-info { width: 100%; margin-top: 8px; }
+.qc-info-col { width: 50%; vertical-align: top; }
+.qc-it { border-collapse: collapse; font-size: 11px; width: 100%; }
+.qc-it td { padding: 1px 3px; vertical-align: top; }
+.qc-il { width: 150px; white-space: nowrap; }
+.qc-irl { width: 175px; white-space: nowrap; }
+.qc-ic { width: 8px; }
+.qc-iv { font-weight: normal; }
+
+.qc-dt { border-collapse: collapse; width: 100%; margin-top: 8px; font-size: 10px; }
+.qc-dt th, .qc-dt td { border: 1px solid #000; text-align: center; padding: 2px 3px; }
+.qc-dt th, .qc-dt td { font-weight: normal; }
+.qc-dt th { line-height: 1.15; vertical-align: middle; }
+.qc-dt tbody td { height: 20px; }
+/* Cột Ghi chú: chốt chiều rộng cố định để ghi chú dài không bóp méo các cột số liệu.
+   Lưu ý: đặt width/max-width trực tiếp lên <td> KHÔNG có tác dụng khi bảng dùng
+   table-layout mặc định (auto) — trình duyệt vẫn nới ô theo nội dung. Phải bọc nội dung
+   trong một <div> có width cố định thì cột mới đứng yên. */
+.qc-dt th.qc-rm, .qc-dt td.qc-rm { width: 160px; text-align: left; }
+.qc-rm-box {
+    width: 160px;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
+}
+
+/* chân trang chứng chỉ (không có dấu mộc & chữ ký) */
+.qc-ft { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 11px; }
+.qc-ft td { padding: 1px 3px; vertical-align: top; line-height: 1.5; }
+/* cột nhãn co theo nội dung để "Đạt/Passed" nằm sát ngay sau nhãn */
+.qc-ft td.qc-ft-l { width: 1%; white-space: nowrap; font-weight: bold; padding-right: 12px; }
+.qc-ft td.qc-ft-v { width: 1%; white-space: nowrap; }
+.qc-ft td.qc-ft-r { text-align: right; padding-right: 6%; font-weight: bold; }
+.qc-ft td.qc-ft-ind { padding-left: 20px; }
+
+.qc-ftb { width: 100%; border-collapse: collapse; margin-top: 34px; font-size: 11px; }
+.qc-ftb td { padding: 0 3px; }
+.qc-ftb td.qc-ftb-doc { width: 33%; }
+.qc-ftb td.qc-ftb-pg { width: 34%; text-align: center; }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label>HPDQ - Xem link chứng chỉ trên khách hàng</label>
+    <description>Cấp quyền XEM field Account.HPDQ_Certificate_Link__c. Field này do hệ thống tự ghi khi bấm "Gửi cho khách hàng", nên chỉ cho đọc, không cho sửa tay để tránh sai lệch.</description>
+    <hasActivationRequired>false</hasActivationRequired>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.HPDQ_Certificate_Link__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+</PermissionSet>

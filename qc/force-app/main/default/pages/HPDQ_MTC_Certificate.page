@@ -1,0 +1,470 @@
+<apex:page standardController="HPDQ_Certificate__c"
+           extensions="HPDQ_CertificatePdfController"
+           renderAs="{!renderMode}"
+           applyHtmlTag="false"
+           applyBodyTag="false"
+           showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           cache="false"
+           title="Phieu chung nhan chat luong">
+<html>
+<head>
+    <style type="text/css">
+        /* Khổ A4 ngang — phiếu MTC có nhiều cột nên bắt buộc landscape.
+           Mã phiếu + số trang đặt ở margin box nên luôn nằm sát chân mỗi trang. */
+        @page {
+            size: A4 landscape;
+            margin: 8mm 8mm 12mm 8mm;
+            @bottom-left   { content: "{!docCode}"; font-family: Arial Unicode MS; font-size: 8pt; }
+            @bottom-center { content: "Page " counter(page) "/" counter(pages); font-family: Arial Unicode MS; font-size: 8pt; }
+        }
+        /* ===== FONT — ĐỌC TRƯỚC KHI SỬA =====
+           Engine PDF của Salesforce (renderAs="pdf") chỉ dùng được vài font có sẵn.
+           Với tiếng Việt, font DUY NHẤT chạy được là `Arial Unicode MS`:
+             - Các font base-14 (Times-Roman, Helvetica...) chỉ phủ bảng mã WinAnsi.
+               Chúng có bản ĐẬM, nhưng thiếu ế/ứ/ậ/ấ/ổ/ượ — dùng vào là mất dấu.
+             - Arial Unicode MS phủ đủ tiếng Việt nhưng Microsoft chỉ phát hành bản
+               THƯỜNG, không tồn tại bản đậm => `font-weight: bold` không có tác dụng.
+
+           Đã thử nhúng font riêng (Times + Times Bold + Arial Bold) qua Static Resource,
+           cả 2 cách và đều THẤT BẠI — kiểm bằng cách đọc /BaseFont trong file PDF sinh ra:
+             1) Resource lẻ:  URLFOR($Resource.X) -> URL không có đuôi .ttf
+             2) Gói ZIP:      URLFOR($Resource.X, 'times.ttf') -> URL có đuôi .ttf
+           Cả hai lần PDF vẫn nhúng `Times-Roman`/`Times-Bold` base-14, tức @font-face
+           bị engine bỏ qua hoàn toàn. Hệ quả: mất dấu tiếng Việt.
+
+           => KHÔNG cố nhúng font nữa. Muốn có serif hoặc chữ đậm thật thì phải đổi
+           cách xuất PDF (in từ trình duyệt — xem preview/cert-print-fallback.html). */
+        body { font-family: Arial Unicode MS; font-size: 8pt; color: #000; margin: 0; }
+        table { border-collapse: collapse; }
+        /* Giữ khai báo để đánh dấu ý định; engine sẽ bỏ qua vì không có mặt chữ đậm. */
+        .bold { font-weight: bold; }
+
+        /* Mỗi trang là một khối riêng, ngắt trang sau — trừ trang cuối */
+        .brk { page-break-after: always; }
+
+        /* ----- WATERMARK -----
+           Đặt làm background-image của KHỐI TRANG, không dùng position:fixed.
+           Lý do: controller đã cắt mỗi trang thành một khối .pg riêng nên background
+           tự lặp đúng một lần mỗi trang, không cần fixed. Đã thử fixed cho logo và
+           nó đè lên nội dung + sinh trang trắng (ghi ở khối chú thích cuối file).
+           Độ mờ NUNG SẴN trong ảnh: engine PDF bỏ qua CSS `opacity`. Muốn đậm/nhạt
+           hơn thì sinh lại Static Resource HPDQ_MTC_Watermark, đừng thêm opacity. */
+        .pg {
+            /* Ép khối trang cao bằng vùng in để watermark bám KHUNG GIẤY, không bám nội dung.
+               Không có dòng này thì trang cuối ít hàng -> khối ngắn -> background căn giữa
+               theo khối, watermark bị đẩy lên đầu trang và cắt cụt (đo thật: trang cuối
+               lệch tâm 27,5pt trong khi các trang đầy chỉ lệch 8,4pt).
+               595,28pt (A4 ngang) - 22,68pt lề trên - 34,02pt lề dưới = 538,6pt vùng in.
+               Lấy 530pt, chừa ~8pt an toàn: min-height mà nhỉnh hơn vùng in là sinh trang trắng. */
+            min-height: 530pt;
+            background-image: url('{!URLFOR($Resource.HPDQ_MTC_Watermark)}');
+            /* Một logo lớn nghiêng 45 độ, góc xoay đã vẽ sẵn trong ảnh vì engine PDF
+               bỏ qua transform. Ảnh vuông nên căn giữa là tâm trùng tâm trang. */
+            background-repeat: no-repeat;
+            background-position: center center;
+        }
+
+        /* ----- header: logo + tiêu đề (lặp lại ở MỌI trang) -----
+           BỀ RỘNG GHIM BẰNG pt, KHÔNG DÙNG %: engine bỏ qua `width: %` trên ô bảng khi
+           bảng gần chật, khi đó ô co giãn theo nội dung. Hậu quả đã đo được: ô trái nở
+           theo logo (220pt) còn ô phải co lại theo 3 logo (111pt) -> phần thừa không cân
+           -> tiêu đề bị đẩy lệch phải 54pt so với tâm giấy.
+           Vùng in = 841,88 - 22,68x2 = 796,5pt, chia:  220 (logo) + 390 (tiêu đề) + 186 (chứng nhận).
+           390pt vì dòng "PHIẾU CHỨNG NHẬN CHẤT LƯỢNG" ở 18pt đo được ~385pt — dưới mức
+           này là tiêu đề rớt xuống hai dòng.
+
+           CHIỀU CAO CŨNG GHIM CỨNG: chiều cao header là một trong các yếu tố quyết định
+           4 ngân sách chia trang trong HPDQ_CertificatePdfController. Để nó tự co theo
+           nội dung thì chỉ cần đổi logo hay tiêu đề gãy dòng là ngân sách sai và tràn
+           trang. Ghim rồi thì đổi logo không còn ảnh hưởng tới việc chia trang. */
+        /* CẢNH BÁO — ĐÃ ĐO, ĐỪNG TIN VÀO width Ở ĐÂY:
+           engine KHÔNG tôn trọng bề rộng ô header, kể cả khai bằng pt và kể cả có
+           `table-layout: fixed`. Bằng chứng: đổi từ % sang pt rồi thêm fixed, tiêu đề
+           chỉ nhúc nhích 282,6 -> 284,7 -> 286,6 trong khi lẽ ra phải dịch ~37pt.
+           Các ô vẫn tự co giãn theo nội dung. Giữ khai báo width vì nó vẫn tác động tới
+           bảng logo lồng bên trong, nhưng ĐỪNG dựa vào nó để canh tiêu đề.
+           Hệ quả còn tồn tại: tiêu đề nằm lệch phải ~55pt so với tâm giấy, do logo trái
+           (220pt) rộng hơn cụm logo phải (111pt). Muốn hết lệch phải thu logo trái. */
+           BỀ RỘNG PHẢI ĐỂ `100%`, KHÔNG ĐƯỢC ĐẶT SỐ pt: khối style này dùng cho CẢ chế độ
+           HTML, mà cửa sổ trình duyệt rộng hơn khổ A4 nhiều. Từng đặt 796pt (= vùng in A4)
+           làm header co lại chỉ còn hơn nửa màn hình trong khi bảng bên dưới vẫn kéo hết
+           chiều ngang — nhìn lệch hẳn. Ở bản PDF thì 100% vốn đã bằng 796pt. */
+        .ch { width: 100%; height: 50pt; table-layout: fixed; }
+        .ch td { vertical-align: middle; height: 50pt; }
+        .ch-l { width: 220pt; }
+        .ch-c { width: 390pt; text-align: center; }
+        .ch-r { width: 186pt; text-align: right; }
+
+        /* 3 logo chứng nhận chia ĐỀU phần còn lại của ô phải, mỗi logo một cột bằng nhau
+           và căn giữa cột. Bề rộng cột do controller tính theo SỐ LOGO đang hiện, nên
+           sau này ẩn bớt logo thì các logo còn lại vẫn trải đều, không dồn về một phía. */
+        .cert-logos { width: 100%; table-layout: fixed; }
+        .cert-logos td { text-align: center; vertical-align: middle; height: auto; }
+        .ch-t1 { color: #0b4a8f; font-size: 18pt; }
+        .ch-t2 { color: #1a1a1a; font-size: 13pt; }
+        /* KHÔNG đặt được font riêng cho tiêu đề trong bản PDF — đã thử và thất bại cả 3 cách:
+             - class CSS `.ch-t2 { font-family: "Times New Roman", serif }`
+             - inline `style="font-family: Times New Roman"`
+             - tên base-14 `font-family: Times`
+           Cả 3 lần đọc /BaseFont trong file PDF sinh ra đều chỉ thấy ArialUnicodeMS.
+           => Engine chỉ nhận font-family ở cấp `body`, bỏ qua khi đặt trên phần tử con.
+           Mà đổi font ở body thì cả phiếu chuyển sang base-14 (chỉ có WinAnsi) và MẤT DẤU
+           tiếng Việt — đã xảy ra thật, tiêu đề từng in ra thành "PHIU CHNG NHN CHT LNG".
+           Kết luận: bản PDF buộc dùng Arial Unicode MS cho toàn bộ, kể cả tiêu đề.
+           Bản xem/in từ trình duyệt thì dùng được Times (xem khối style của chế độ HTML). */
+        /* 2 logo tách class riêng để chỉnh độc lập */
+        /* Ghim theo CHIỀU RỘNG, để chiều cao tự co theo tỉ lệ ảnh.
+           Trước đây ghim theo chiều cao (74px): khi đổi sang logo có tỉ lệ dài hơn
+           (4,82:1 thay vì 3,97:1) thì logo nở ngang 220pt -> 267pt, lấn sang cột giữa
+           và làm tiêu đề "PHIẾU CHỨNG NHẬN CHẤT LƯỢNG" rớt xuống dòng thứ hai.
+           293px = 220pt là bề rộng cột logo chịu được — giữ số này khi đổi logo. */
+        .logo-l { width: 293px; height: auto; }   /* logo Hòa Phát */
+        /* 3 logo chứng nhận, trước đây gộp trong MỘT ảnh (HPDQ_MTC_LogoRight) nên không
+           chỉnh riêng được và khoảng trắng thừa trong ảnh chiếm mất chỗ. Nay tách rời,
+           nền đã bỏ trắng -> watermark nhìn xuyên qua được.
+           Chiều cao đặt xấp xỉ kích thước cũ (ảnh gộp 92px, phần có hình chiếm ~60%
+           tức ~55px) để chiều cao header không đổi — header cao lên là phải đo lại
+           4 ngân sách chia trang. */
+        .logo-r  { vertical-align: middle; margin-left: 6px; }
+        .logo-r1 { height: 46px; }   /* BoA / VILAS */
+        .logo-r2 { height: 46px; }   /* QUACERT ISO 9001 */
+        .logo-r3 { height: 40px; }   /* Vietnam Value — trong mẫu gốc thấp hơn 2 cái kia */
+
+        /* ----- khối thông tin phiếu (chỉ trang đầu) ----- */
+        .info { width: 96%; margin-left: 2%; margin-top: 6px; }
+        .info-col { width: 50%; vertical-align: top; }
+        .it { width: 100%; font-size: 8pt; }
+        .it td { padding: 1px 3px; vertical-align: top; }
+        .il { width: 130px; }
+        .irl { width: 150px; }
+        .ic { width: 6px; }
+
+        /* ----- bảng dữ liệu ----- */
+        .dt { width: 96%; margin-left: 2%; margin-top: 6px; font-size: 7pt; }
+        .dt th, .dt td {
+            border: 1px solid #000;
+            text-align: center;
+            padding: 5px 6px;
+            line-height: 1.2;
+            font-weight: normal;   /* mẫu in không in đậm trong bảng */
+        }
+        /* KHÔNG chặn wrap toàn bộ ô dữ liệu.
+           Đã thử `white-space: nowrap` cho mọi td và phải gỡ: 28 cột cùng đòi đủ bề rộng một
+           dòng làm tổng vượt khổ giấy, engine bóp cột duy nhất co giãn được — cột GHI CHÚ —
+           xuống còn ~10pt, coi như mất khỏi bản in.
+           Các ô số liệu/mã đều ngắn hơn nhãn header nên trên thực tế không wrap. */
+        /* Cột Ghi chú: đặt bề rộng TUYỆT ĐỐI (pt), không dùng %.
+           Với 28 cột, bảng gần như chật kín nên engine bỏ qua width dạng % và bóp cột này
+           xuống ~12pt (đo trong PDF) — coi như mất cột khỏi bản in. */
+        .dt tbody td.rm { white-space: normal; width: 70pt; text-align: left; }
+        .dt th.rm { width: 70pt; }
+        /* KHÔNG dùng white-space: nowrap cho th. Đã thử và phải gỡ: nowrap buộc mọi nhãn
+           header nằm trên một dòng -> bảng rộng hơn khổ giấy -> cột cuối (GHI CHÚ/REMARKS)
+           bị đẩy hẳn ra ngoài trang, mất luôn khỏi bản in.
+           Header wrap được nên chiều cao có dao động chút; phần dao động đó đã được bù bằng
+           biên an toàn UNITS_EXTRA_LINE trong controller. */
+        .dt th { vertical-align: middle; }
+
+        /* ----- chân trang kết luận (chỉ trang cuối) ----- */
+        .ft { width: 96%; margin-left: 2%; margin-top: 8px; font-size: 8pt; }
+        .ft td { padding: 1px 3px; vertical-align: top; }
+        /* Cột nhãn đặt CHIỀU RỘNG CỐ ĐỊNH thay vì padding-right: engine không áp đủ padding
+           cho ô co theo nội dung, nên "Đạt/Passed" bị dính sát nhãn. Mẫu in đặt giá trị này
+           ở khoảng 30% chiều rộng trang. */
+        .ft-l { width: 30%; white-space: nowrap; }
+        .ft-v { width: 1%; white-space: nowrap; }
+        .ft-r { text-align: right; padding-right: 6%; }
+        .ft-ind { padding-left: 20px; }
+
+        /* ----- ô ký xác nhận (theo doc 3.3: BGĐ trái, TP.KD phải) ----- */
+        /* Khối này chiếm chỗ trên TRANG CUỐI nên trực tiếp làm giảm số cuộn in được.
+           Giữ thật gọn: tiêu đề 1 dòng, chừa 32px ký tay, 1 dòng kẻ điền tên. */
+        .sig { width: 96%; margin-left: 2%; margin-top: 8px; font-size: 8pt; }
+        .sig td { text-align: center; vertical-align: top; width: 50%; padding: 0 8%; }
+        .sig .sig-title { font-weight: bold; }
+        .sig .sig-space { height: 32px; }
+        .sig .sig-name { border-top: 1px dotted #000; padding-top: 2px; }
+        /* nửa trái để trống: đặc tả 6.2 chỉ có MỘT ô ký, bên phải */
+        .sig .sig-blank { border: 0; }
+
+        /* mã biểu mẫu / ngày hiệu lực ở góc phải header */
+        .form-code { font-size: 7pt; text-align: right; }
+
+        /* hàng tổng cuối bảng */
+        .dt tbody tr.total-row td { font-weight: bold; }
+
+        /* chú thích cuối bảng */
+        .note { width: 96%; margin-left: 2%; margin-top: 6px; font-size: 8pt; }
+        .note .note-label { font-weight: bold; }
+
+        .err { font-size: 11pt; color: #a00; padding: 20px; }
+
+        /* Nút Print mặc định ẩn; chỉ chế độ HTML bật lên (xem khối style bên dưới). */
+        .print-bar { display: none; }
+    </style>
+
+<!--
+  ===== CSS RIÊNG CHO CHẾ ĐỘ HTML =====
+  BẮT BUỘC tách ra khối style riêng và chỉ xuất khi renderMode == null.
+  Lý do: engine PDF của Salesforce coi media của nó LÀ "print", nên nó cũng áp dụng
+  @media print. Trước đây để chung một khối, PDF bị lây font "Times New Roman" và
+  nhúng Times-Roman/Times-Bold (base-14, chỉ có WinAnsi) -> MẤT DẤU tiếng Việt.
+  Kiểm bằng cách đọc /BaseFont trong file PDF: chỉ được có ArialUnicodeMS.
+-->
+<apex:outputPanel layout="none" rendered="{!renderMode == null}">
+    <style type="text/css">
+        /* Trên trình duyệt có font Times New Roman thật (đủ dấu tiếng Việt) nên CẢ HAI dòng
+           tiêu đề đều dùng được — khác với bản PDF, nơi dòng tiếng Việt buộc phải giữ
+           Arial Unicode MS. */
+        .ch-t1, .ch-t2 { font-family: "Times New Roman", serif; }
+
+        /* --- HEADER Ở CHẾ ĐỘ HTML: PHẢI GỠ BỀ RỘNG CỐ ĐỊNH CỦA BẢN PDF ---
+           Bản PDF ghim cột bằng pt (220 + 390 + 186 = 796pt = đúng vùng in A4) kèm
+           `table-layout: fixed`. Áp nguyên bộ đó lên trình duyệt thì header đứng yên ở
+           1061px trong khi cửa sổ rộng ~1830px -> header chỉ chiếm hơn nửa màn hình,
+           còn khối thông tin và bảng bên dưới vẫn kéo hết ngang, nhìn lệch hẳn.
+           Ở đây trả về layout tự động + tỉ lệ %, để header giãn theo cửa sổ. */
+        .ch   { table-layout: auto; }
+        .ch-l { width: 24%; }
+        .ch-c { width: auto; }
+        .ch-r { width: 24%; }
+
+        /* --- WATERMARK Ở CHẾ ĐỘ HTML ---
+           Dùng CHUNG cơ chế background của .pg với bản PDF (khai ở khối style đầu file):
+           controller cắt trang cho CẢ HAI chế độ nên mỗi khối .pg là một trang in, và
+           ảnh watermark đã chứa sẵn cả dải 3 logo chéo nên chỉ cần no-repeat.
+           Trình duyệt MẶC ĐỊNH không in ảnh nền -> phải ép bằng print-color-adjust.
+           Người dùng vẫn có thể tắt bằng cách bỏ chọn "Background graphics" trong hộp
+           thoại in; khi đó bản in ra sẽ không có watermark. */
+        .pg {
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+
+        /* --- XEM TRÊN MÀN HÌNH (tab "Trang In") --- */
+        @media screen {
+            /* Phiếu có ~28 cột: nếu để co theo bề rộng iframe thì tiêu đề gãy dòng và các cột
+               hóa học bị bóp mất chữ. Ép bề rộng tối thiểu để trình duyệt cuộn ngang. */
+            body { font-size: 11pt; padding: 10px 14px; min-width: 1150px; }
+            .it, .ft { font-size: 10pt; }
+            .dt { font-size: 9pt; }
+            .dt th, .dt td { padding: 4px 6px; }
+            .ch-t1 { font-size: 22pt; }
+            .ch-t2 { font-size: 15pt; }
+            .print-bar { display: block; text-align: right; margin: 0 2% 8px 2%; }
+            .print-btn {
+                background: #0176d3; color: #fff; border: 0; border-radius: 4px;
+                padding: 8px 18px; font-size: 11pt; cursor: pointer;
+            }
+        }
+
+        /* --- IN TỪ TRÌNH DUYỆT ---
+           Chỉ ẩn nút Print và đặt khổ giấy. KHÔNG can thiệp gì thêm: bố cục và việc chia
+           trang do controller quyết định, giống hệt đường Trích PDF, để bản in từ trình
+           duyệt khớp bản PDF đính kèm.
+
+           ĐÃ THỬ VÀ GỠ (đừng làm lại):
+           - Đổi font sang Times New Roman + in đậm ở đây: engine PDF coi media của nó LÀ
+             "print" nên cũng áp dụng, làm PDF nhúng Times-Roman/Times-Bold (base-14, chỉ có
+             WinAnsi) và MẤT DẤU tiếng Việt. Nay khối style này chỉ xuất ở chế độ HTML nên
+             an toàn, nhưng vẫn không dùng vì bản in phải khớp bản PDF.
+           - `thead { display: table-header-group }` để trình duyệt tự lặp header: vô nghĩa
+             khi controller đã cắt mỗi trang thành một bảng riêng.
+           - Logo `position: fixed` để lặp mọi trang: nó ĐÈ lên nội dung đầu mỗi trang (mất
+             dòng "Số/ No." và "MILL", trang sau trông như mất header cột) và sinh thêm trang
+             trắng. `padding-top` chỉ đẩy nội dung một lần ở đầu tài liệu, không chừa chỗ
+             được cho từng trang. */
+        @media print {
+            .print-bar { display: none; }
+            @page { size: A4 landscape; margin: 8mm; }
+        }
+    </style>
+</apex:outputPanel>
+</head>
+<body>
+
+<apex:outputPanel layout="none" rendered="{!errorMessage != null}">
+    <div class="err">{!errorMessage}</div>
+</apex:outputPanel>
+
+<apex:outputPanel layout="none" rendered="{!errorMessage == null}">
+
+<!-- Nút Print (doc 3.3): chỉ hiện khi xem HTML, không đưa vào file PDF -->
+<apex:outputPanel layout="none" rendered="{!renderMode == null}">
+    <div class="print-bar">
+        <button type="button" class="print-btn" onclick="window.print(); return false;">In phiếu</button>
+    </div>
+</apex:outputPanel>
+
+<apex:repeat value="{!pages}" var="pg">
+<div class="pg {!IF(pg.isLast, '', 'brk')}">
+
+    <!-- ===== header: logo + tiêu đề =====
+         Chế độ PDF: mỗi khối trang do controller cắt ra tự in lại một lần.
+         Chế độ HTML: chỉ có 1 khối, nhưng khi IN thì CSS đặt khối này thành position:fixed
+         nên Chrome vẽ lại nó ở mọi trang. Nhờ vậy thứ tự luôn đúng —
+         logo trước, khối thông tin sau — mà vẫn lặp được qua trang. -->
+    <table class="ch">
+        <tr>
+            <td class="ch-l"><apex:image styleClass="logo-l" url="{!URLFOR($Resource.HPDQ_MTC_LogoLeft)}" alt="Hoa Phat"/></td>
+            <td class="ch-c">
+                <div class="ch-t1 bold">PHIẾU CHỨNG NHẬN CHẤT LƯỢNG</div>
+                <div class="ch-t2 bold">MILL TEST CERTIFICATE</div>
+            </td>
+            <td class="ch-r">
+                <!-- Mã biểu mẫu + ngày hiệu lực (đặc tả 6.2). Chỉ in khi đã cấu hình giá trị.
+                     Dải logo chứng nhận giữ lại vì mẫu in đang lưu hành có 3 logo này. -->
+                <apex:outputPanel layout="none" rendered="{!formCode != ''}">
+                    <div class="form-code">Mã biểu mẫu: {!formCode}</div>
+                </apex:outputPanel>
+                <apex:outputPanel layout="none" rendered="{!formEffectiveDate != ''}">
+                    <div class="form-code">Ngày hiệu lực: {!formEffectiveDate}</div>
+                </apex:outputPanel>
+                <!-- Mỗi logo chứng nhận một cột bằng nhau -> chia đều bề ngang còn lại.
+                     Bọc trong rendered riêng vì Visualforce KHÔNG cho truyền tên Static
+                     Resource động ($Resource[bien] là cú pháp không hợp lệ), nên muốn hiện
+                     logo theo mác thép thì phải khai đủ ở đây rồi bật/tắt bằng cờ.
+                     Sắp tới chỉ cần sửa 3 getter showLogo* trong controller. -->
+                <table class="cert-logos">
+                    <tr>
+                        <apex:outputPanel layout="none" rendered="{!showLogoBoA}">
+                            <td style="width: {!logoCellWidth}">
+                                <apex:image styleClass="logo-r1" url="{!URLFOR($Resource.HPDQ_MTC_LogoBoA)}" alt="BoA VILAS 1190"/>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!showLogoQuacert}">
+                            <td style="width: {!logoCellWidth}">
+                                <apex:image styleClass="logo-r2" url="{!URLFOR($Resource.HPDQ_MTC_LogoQuacert)}" alt="QUACERT ISO 9001"/>
+                            </td>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!showLogoVietnamValue}">
+                            <td style="width: {!logoCellWidth}">
+                                <apex:image styleClass="logo-r3" url="{!URLFOR($Resource.HPDQ_MTC_LogoVietnamValue)}" alt="Vietnam Value"/>
+                            </td>
+                        </apex:outputPanel>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    <!-- ===== thông tin phiếu: chỉ trang đầu ===== -->
+    <apex:outputPanel layout="none" rendered="{!pg.isFirst}">
+    <table class="info">
+        <tr>
+            <td class="info-col">
+                <table class="it">
+                    <apex:repeat value="{!infoLeft}" var="r">
+                        <tr><td class="il">{!r.k}</td><td class="ic">:</td><td>{!r.v}</td></tr>
+                    </apex:repeat>
+                </table>
+            </td>
+            <td class="info-col">
+                <table class="it">
+                    <apex:repeat value="{!infoRight}" var="r">
+                        <tr><td class="irl">{!r.k}</td><td class="ic">:</td><td>{!r.v}</td></tr>
+                    </apex:repeat>
+                </table>
+            </td>
+        </tr>
+    </table>
+    </apex:outputPanel>
+
+    <!-- ===== bảng dữ liệu: header 5 tầng, in lại ở mọi trang ===== -->
+    <table class="dt">
+        <thead>
+            <tr>
+                <th rowspan="5">STT</th>
+                <th rowspan="5">SỐ CUỘN<br/>COIL No.</th>
+                <th colspan="4">THÔNG TIN SẢN PHẨM</th>
+                <th rowspan="5">MẺ SỐ<br/>HEAT No.</th>
+                <th colspan="5">CƠ TÍNH SẢN PHẨM</th>
+                <th colspan="{!chemCols.size}">THÀNH PHẦN HÓA HỌC (%)</th>
+                <th rowspan="5" class="rm">GHI CHÚ<br/>REMARKS</th>
+            </tr>
+            <tr>
+                <th colspan="4">PRODUCT INFORMATION</th>
+                <th colspan="5">MECHANICAL PROPERTIES</th>
+                <th colspan="{!chemCols.size}">CHEMICAL COMPOSITION (%)</th>
+            </tr>
+            <tr>
+                <th>Độ dày</th><th>Độ rộng</th><th>Chiều dài</th><th>Khối lượng</th>
+                <th>Giới hạn chảy</th><th>Giới hạn bền</th><th>Độ giãn dài</th><th>Độ cứng</th><th>Thử uốn</th>
+                <apex:repeat value="{!chemCols}" var="c"><th rowspan="2">{!c}</th></apex:repeat>
+            </tr>
+            <tr>
+                <th>Thickness</th><th>Width</th><th>Length</th><th>Weight</th>
+                <th>Yield<br/>strength</th><th>Tensile<br/>strength</th><th>Elongation</th><th>Hardness</th><th>Bending<br/>Test</th>
+            </tr>
+            <tr>
+                <th>mm</th><th>mm</th><th>mm</th><th>kg</th>
+                <th>MPa</th><th>MPa</th><th>%</th><th>HRB</th><th></th>
+                <apex:repeat value="{!chemUnits}" var="g"><th colspan="{!g.span}">{!g.label}</th></apex:repeat>
+            </tr>
+        </thead>
+        <tbody>
+            <apex:repeat value="{!pg.rows}" var="r">
+                <tr>
+                    <td>{!r.stt}</td><td>{!r.coil}</td>
+                    <td>{!r.thickness}</td><td>{!r.width}</td><td>{!r.len}</td><td>{!r.weight}</td>
+                    <td>{!r.heat}</td>
+                    <td>{!r.ys}</td><td>{!r.ts}</td><td>{!r.el}</td><td>{!r.hrb}</td><td>{!r.bend}</td>
+                    <apex:repeat value="{!r.chem}" var="cv"><td>{!cv}</td></apex:repeat>
+                    <td class="rm">{!r.remarks}</td>
+                </tr>
+            </apex:repeat>
+            <!-- Hàng tổng khối lượng, chỉ ở trang cuối (đặc tả 6.4 mục 8) -->
+            <apex:outputPanel layout="none" rendered="{!pg.isLast}">
+                <tr class="total-row">
+                    <td colspan="5">TỔNG/ TOTAL</td>
+                    <td>{!totalWeightText}</td>
+                    <td colspan="{!colsAfterWeight}"></td>
+                </tr>
+            </apex:outputPanel>
+        </tbody>
+    </table>
+
+    <!-- Chú thích cuối bảng, lấy từ HPDQ_Note__c (đặc tả 6.2) -->
+    <apex:outputPanel layout="none" rendered="{!AND(pg.isLast, note != '')}">
+        <div class="note">
+            <span class="note-label">Ghi chú/ Note:</span> {!note}
+        </div>
+    </apex:outputPanel>
+
+    <!-- ===== kết luận: chỉ trang cuối (không dấu mộc & chữ ký) ===== -->
+    <apex:outputPanel layout="none" rendered="{!pg.isLast}">
+    <table class="ft">
+        <tr>
+            <td class="ft-l bold">* Chỉ tiêu ngoại quan/ The physical properties:</td>
+            <td class="ft-v">Đạt/Passed</td>
+            <td class="ft-r bold">AS THE MANUFACTURER/ NHÀ SẢN XUẤT</td>
+        </tr>
+        <tr><td class="ft-l bold">* Kết luận/ Result:</td><td></td><td></td></tr>
+        <tr><td class="ft-ind" colspan="2">{!resultVi}</td><td></td></tr>
+        <tr><td class="ft-ind" colspan="2">{!resultEn}</td><td></td></tr>
+    </table>
+
+    <!-- Ô ký xác nhận theo doc 3.3. Cố tình để TRỐNG cho ký tay + đóng dấu ướt,
+         không nhúng ảnh chữ ký hay dấu mộc. -->
+    <table class="sig">
+        <tr>
+            <td class="sig-blank"></td>
+            <td class="sig-title">TRƯỞNG PHÒNG QLCL/ TP.QLCL</td>
+        </tr>
+        <tr><td class="sig-blank"></td><td class="sig-space"></td></tr>
+        <tr>
+            <td class="sig-blank"></td>
+            <td class="sig-name">Họ và tên/ Name</td>
+        </tr>
+    </table>
+    </apex:outputPanel>
+
+</div>
+</apex:repeat>
+</apex:outputPanel>
+
+</body>
+</html>
+</apex:page>

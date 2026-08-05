@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StaticResource xmlns="http://soap.sforce.com/2006/04/metadata">
+    <cacheControl>Public</cacheControl>
+    <contentType>image/png</contentType>
+    <description>Watermark phiếu MTC: logo Hòa Phát xoay 45 độ, mờ 30%, nền trắng, ảnh vuông 710px. Engine PDF bỏ qua CSS opacity và transform nên góc xoay + độ mờ phải nung sẵn vào ảnh; muốn đổi thì sinh lại ảnh, đừng thêm CSS.</description>
+</StaticResource>
